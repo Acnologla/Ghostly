@@ -1,5 +1,6 @@
 test-results/
 tmp/
+target
 routes/
 assets/.DS_Store
 assets/node_modules/
