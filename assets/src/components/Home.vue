@@ -15,7 +15,9 @@ export default {
         let app = Game.createPIXI();
         document.getElementById("page").appendChild(app.view);
         
-        Game.loadMap(app,"normal")
+        Game.loadMap(app,"normal").then((map) => {
+            console.log(map);
+        })
     }
 }
 </script>
