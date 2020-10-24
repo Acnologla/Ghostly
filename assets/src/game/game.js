@@ -1,5 +1,3 @@
-
-import e from "express";
 import { Scene, app } from "./scene.js";
 
 let resources;

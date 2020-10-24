@@ -1,1 +1,18 @@
-{ "presets": [ ["env", "commonjs"], "stage-3" ], "plugins": [["transform-runtime", { "polyfill": false, "regenerator": true }]] }
+{
+    "presets": [
+        [
+            "env",
+            "commonjs"
+        ],
+        "stage-3"
+    ],
+    "plugins": [
+        [
+            "transform-runtime",
+            {
+                "polyfill": false,
+                "regenerator": true
+            }
+        ]
+    ]
+}
