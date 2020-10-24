@@ -1,5 +1,6 @@
 class TileMap {
-    constructor(name, tiles, layers, collision){
+    constructor(name, info, tiles, layers, collision){
+        this.info = info;
         this.name = name;
         this.tiles = tiles;
         this.layers = layers;

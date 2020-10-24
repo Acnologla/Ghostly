@@ -1,22 +1,13 @@
 import TileMap from "./tilemap.js"
 
-const ratio = 667/1366;
-
 function createPIXI(){
-    var app = new PIXI.Application(window.innerWidth, window.innerHeight);
-    app.renderer.autoResize = true;
-    app.renderer.resize(window.innerWidth,Math.abs(ratio*window.innerWidth))  
-    app.stage.scale.set(0.5,0.5);
-    window.addEventListener('resize', () => {
-        app.renderer.resize(window.innerWidth,Math.abs(ratio*window.innerWidth))  
-    })
+    var app = new PIXI.Application({resizeTo: window});
+    PIXI.AbstractRenderer.autoDensity = true;
     return app 
 }
 
-function loadMapIntoPIXI(app, name){
+function loadMapIntoPIXI(loader, app, name){
     return new Promise((res, rej) => {
-        var loader = new PIXI.loaders.Loader();
-
         loader
             .add('img','src/game/map/' + name + '/tiles.png')
             .add('atlas','src/game/map/' + name + '/tileset.json')
@@ -58,7 +49,12 @@ function loadMapIntoPIXI(app, name){
                 layers.push(tilemap_layer);
             }
 
-            res(new TileMap("seila", tiles, layers, collision_map))
+            res(new TileMap("seila", {
+                tilewidth: atlas.tilewidth,
+                tileheight: atlas.tileheight,
+                mapwidth:  atlas.imagewidth,
+                mapheight: atlas.imageheight,
+            }, tiles, layers, collision_map))
         });
     });
 }
