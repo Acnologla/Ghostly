@@ -13,30 +13,29 @@ function createPIXI(){
     return app 
 }
 
-function loadMap(app, name){
+function loadMapIntoPIXI(app, name){
     return new Promise((res, rej) => {
         var loader = new PIXI.loaders.Loader();
 
         loader
-            .add('src/assets/img/tile.png')
-            .add('atlas','src/game/map/tileset.json')
-            .add('map','src/game/map/map.json');
+            .add('img','src/game/map/' + name + '/tiles.png')
+            .add('atlas','src/game/map/' + name + '/tileset.json')
+            .add('map','src/game/map/' + name + '/map.json');
     
         loader.load((loader, resources) => {
             let atlas = resources.atlas.data;
             let map_size = [atlas.imagewidth/atlas.tilewidth, atlas.imageheight/atlas.tileheight]
     
-            let tiles = []
-    
+            let collision_map;
+            let tiles = [];
+            let layers = [];
+            
             for(let y = 0; y < map_size[1]; y++){ 
                 for(let x = 0; x < map_size[0]; x++){    
-                    var texture = new PIXI.Texture(resources["src/assets/img/tile.png"].texture, new PIXI.Rectangle(x*atlas.tilewidth, y*atlas.tileheight, atlas.tilewidth, atlas.tileheight));
+                    var texture = new PIXI.Texture(resources["img"].texture, new PIXI.Rectangle(x*atlas.tilewidth, y*atlas.tileheight, atlas.tilewidth, atlas.tileheight));
                     tiles.push(texture);
                 }   
             }
-    
-            let collision_map;
-            let layers = []
     
             for(let i = 0; i < resources.map.data.layers.length; i++) {
                 let layer = resources.map.data.layers[i];
@@ -46,9 +45,8 @@ function loadMap(app, name){
                     continue;
                 }
     
-                var tilemap_layer = new PIXI.tilemap.CompositeRectTileLayer(0, PIXI.utils.TextureCache['src/assets/img/tile.png']);
-                app.stage.addChild(tilemap_layer);
-                 
+                var tilemap_layer = new PIXI.tilemap.CompositeRectTileLayer(0, PIXI.utils.TextureCache['img']);
+
                 for(let y = 0; y < layer.height; y++){ 
                     for(let x = 0; x < layer.width; x++){    
                         if (layer.data[y*layer.height + x] != 0){
@@ -65,4 +63,4 @@ function loadMap(app, name){
     });
 }
 
-export {createPIXI, loadMap};
+export {createPIXI,loadMapIntoPIXI};

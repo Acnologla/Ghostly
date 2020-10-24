@@ -6,18 +6,14 @@
 
 <script>
 
-import * as Game from "../game/graphics/start.js";
+import {GraphicsController} from "../game/graphics/index.js";
 
 export default {
     name: "home",
     mounted() {
-        console.log(Game)
-        let app = Game.createPIXI();
-        document.getElementById("page").appendChild(app.view);
-        
-        Game.loadMap(app,"normal").then((map) => {
-            console.log(map);
-        })
+        let graphics = new GraphicsController();
+        document.getElementById("page").appendChild(graphics.app.view);
+        graphics.loadMap("room").then((n) => { console.log(n) })
     }
 }
 </script>
