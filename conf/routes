@@ -7,9 +7,12 @@ module:testrunner
 # module:jobs
 
 GET     /public/*filepath                       Static.Serve("public")
+POST    /room                                   App.CreateRoom
+POST    /room/:roomID/join                      App.JoinRoom
+POST    /room/list                              App.GetRooms
 GET     /                                       App.Index
 GET     /*                                      App.Index
-
+WS      /ws/room                                Websocket.Index
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
