@@ -29,12 +29,13 @@ func (c App) Index() revel.Result {
 func (c App) GetRooms() revel.Result {
 	roomsArr := []Room{}
 	for _, room := range Rooms{
-		roomsArr = append(roomsArr,room)
+		roomsArr = append(roomsArr,*room)
 	}
 	return c.RenderJSON(roomsArr)
 }
 
 func (c App) JoinRoom(username string, roomID string) revel.Result {
+	c.Response.Status = 400
 	if username != ""{
 		RoomMutex.Lock()
 		defer RoomMutex.Unlock()
@@ -43,6 +44,7 @@ func (c App) JoinRoom(username string, roomID string) revel.Result {
 				return c.RenderText("The room is full")
 			}
 			if !findPlayer(room,username){
+				c.Response.Status = 200
 				room.Players = append(room.Players,username)
 				return c.RenderText(roomID)
 			}else{
@@ -56,18 +58,16 @@ func (c App) JoinRoom(username string, roomID string) revel.Result {
 }
 
 func (c App) CreateRoom(owner string) revel.Result{
-	println(owner)
-	v := c.Params.Form.Get("owner")
-	println(v)
 	if owner != ""{
 		room := Room{}
 		room.Players = make([]string,0,10)
 		room.Players = append(room.Players,owner)
 		room.ID = genCode()
 		RoomMutex.Lock()
-		Rooms[room.ID] = room
+		Rooms[room.ID] = &room
 		RoomMutex.Unlock()
 		return c.RenderText(room.ID)
 	}
+	c.Response.Status = 400
 	return c.RenderText("Invalid username")
 }

@@ -17,8 +17,8 @@ const routes = [
     },
     {
         path: "/room/:room",
-        component: Room,
-        name: "room"
+        name: "room",
+        component: Room
     }
   ]
   

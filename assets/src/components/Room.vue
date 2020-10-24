@@ -3,9 +3,11 @@
 <script>
 export default{
     name: "room",
-    async mount(){
-          const socket = new WebSocket('ws://'+window.location.host+`/ws/room?username=${this.$route.query.username}&room=${this.$route.params.room}`)
-
+    async created(){
+          const socket = new WebSocket(`ws://localhost:9000/ws/room?username=${this.$route.query.username}&roomID=${this.$route.params.room}`)
+          socket.onmessage = function(message){
+              console.log(message)
+          }
     }
 }
 </script>
