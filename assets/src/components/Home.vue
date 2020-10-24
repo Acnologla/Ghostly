@@ -1,11 +1,5 @@
 <template>
-    <div>
-    
-    
-    
-        <h1>Ola mundo</h1>
-    
-    
+    <div id="page">
     
     </div>
 </template>
@@ -14,29 +8,23 @@
 export default {
     name: "home",
     mounted() {
-
-        var renderer = PIXI.autoDetectRenderer(800, 600);
-        document.body.appendChild(renderer.view);
+        var resolutionX = 800;
+        var resolutionY = 600;
+        
+        var app = new PIXI.Application(resolutionX, resolutionY);
+        document.getElementById("page").appendChild(app.view);
+        var tileSizeX = 400;
+        var tileSizeY = 400;
 
         var loader = new PIXI.loaders.Loader();
-        loader.add('atlas', 'basic/atlas.json');
+        loader.add('src/assets/img/tile.png');
         loader.load(function(loader, resources) {
-            var tilemap = new PIXI.tilemap.CompositeRectTileLayer(0, [resources['atlas_image'].texture]);
-            var size = 32;
-            // bah, im too lazy, i just want to specify filenames from atlas
-            for (var i = 0; i < 7; i++)
-                for (var j = 0; j < 7; j++) {
-                    tilemap.addFrame("grass.png", i * size, j * size);
-                    if (i % 2 == 1 && j % 2 == 1)
-                        tilemap.addFrame("tough.png", i * size, j * size);
-                }
+            var texture = new PIXI.Texture(loader.resources["src/assets/img/tile.png"].texture, new PIXI.Rectangle(0, 0, 200, 200));
 
-            // if you are lawful citizen, please use textures from the loader
-            var textures = resources.atlas.textures;
-            tilemap.addFrame(textures["brick.png"], 2 * size, 2 * size);
-            tilemap.addFrame(textures["brick_wall.png"], 2 * size, 3 * size);
+            var tiles = new PIXI.tilemap.CompositeRectTileLayer(0, PIXI.utils.TextureCache['src/assets/img/tile.png']);
+            app.stage.addChild(tiles);
 
-            renderer.render(tilemap);
+            tiles.addFrame(texture, 0, 0);
         });
     }
 }
