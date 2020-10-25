@@ -30,6 +30,11 @@ class Scene {
         let collision_map;
         let tiles = [];
         let layers = [];
+        
+        let info = {
+            tilewidth: atlas.tilewidth,
+            tileheight: atlas.tileheight,
+        }
 
         for (let y = 0; y < map_size[1]; y++) {
             for (let x = 0; x < map_size[0]; x++) {
@@ -43,6 +48,8 @@ class Scene {
 
             if (layer.name == "collision") {
                 collision_map = layer.data.map(a => a > 0 ? a - tiles.length : 0);
+                info.mapwidth = layer.width;
+                info.mapheight = layer.height;
                 continue;
             }
 
@@ -59,12 +66,6 @@ class Scene {
             layers.push(tilemap_layer);
         }
 
-        const info = {
-            tilewidth: atlas.tilewidth,
-            tileheight: atlas.tileheight,
-            mapwidth: atlas.imagewidth,
-            mapheight: atlas.imageheight,
-        }
 
         return new TileMap(name, info, tiles, layers, collision_map)
     }
