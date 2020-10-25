@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/revel/revel"
 	"crypto/rand"
+	"github.com/acnologla/Ghostly/app/room"
     "unsafe"
 )
 
@@ -27,7 +28,7 @@ func (c App) Index() revel.Result {
 }
 
 func (c App) GetRooms() revel.Result {
-	roomsArr := []Room{}
+	roomsArr := []room.Room{}
 	for _, room := range Rooms{
 		roomsArr = append(roomsArr,*room)
 	}
@@ -37,13 +38,13 @@ func (c App) GetRooms() revel.Result {
 func (c App) JoinRoom(username string, roomID string) revel.Result {
 	c.Response.Status = 400
 	if username != ""{
-		RoomMutex.Lock()
-		defer RoomMutex.Unlock()
-		if room,ok := Rooms[roomID];ok{
+		if room := getRoom(roomID);room !=nil{
+			room.Mutex.Lock()
+			defer room.Mutex.Unlock()
 			if len(room.Players) > 9{
 				return c.RenderText("The room is full")
 			}
-			if !findPlayer(room,username){
+			if !room.FindPlayer(username){
 				c.Response.Status = 200
 				room.Players = append(room.Players,username)
 				return c.RenderText(roomID)
@@ -59,13 +60,11 @@ func (c App) JoinRoom(username string, roomID string) revel.Result {
 
 func (c App) CreateRoom(owner string) revel.Result{
 	if owner != ""{
-		room := Room{}
+		room := room.Room{}
 		room.Players = make([]string,0,10)
 		room.Players = append(room.Players,owner)
 		room.ID = genCode()
-		RoomMutex.Lock()
-		Rooms[room.ID] = &room
-		RoomMutex.Unlock()
+		setRoom(room)
 		return c.RenderText(room.ID)
 	}
 	c.Response.Status = 400

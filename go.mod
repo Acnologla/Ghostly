@@ -1,4 +1,4 @@
-module Ghostly
+module github.com/acnologla/Ghostly
 
 go 1.15
 

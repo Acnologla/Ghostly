@@ -5,6 +5,7 @@
         <div style="cursor:pointer" @click="join(room.ID)" v-for="room in rooms" :key="room.ID">
             <h1>Codigo: {{room.ID}}</h1>
             <h2>Jogadores: {{room.Players.length}}</h2>
+            <h3>Estado: {{room.State === 1 ?"Começou" : "Não começou"}}</h3>
         </div>
     </div>
 </template>

@@ -3,24 +3,24 @@ package controllers
 import (
 	"github.com/revel/revel"
 	"sync"
+	"github.com/acnologla/Ghostly/app/room"
 )
 
-type Room struct{
-	Players []string
-	ID string
-}
-
-func findPlayer(room *Room,playerName string) bool{
-	for _, player := range room.Players{
-		if player == playerName{
-			return true
-		}
-	}
-	return false
-}
-
-var Rooms = map[string]*Room{}
+var Rooms = map[string]*room.Room{}
 var RoomMutex = sync.RWMutex{}
+
+func getRoom(roomID string) *room.Room{
+	RoomMutex.RLock()
+	defer RoomMutex.RUnlock()
+	room := Rooms[roomID]
+	return room
+}
+
+func setRoom(room room.Room){
+	RoomMutex.Lock()
+	defer RoomMutex.Unlock()
+	Rooms[room.ID] = &room
+}
 
 type WebSocket struct {
 	*revel.Controller
@@ -28,11 +28,13 @@ type WebSocket struct {
 
 func (c WebSocket) Index(username string,roomID string, ws revel.ServerWebSocket) revel.Result {
 	if username != "" && ws != nil{
-		RoomMutex.Lock()
-		defer RoomMutex.Unlock()
-		if room,ok := Rooms[roomID];ok{
-			if findPlayer(room,username){
+		if room := getRoom(roomID); room != nil{
+			room.Mutex.RLock()
+			if room.FindPlayer(username){
 				ws.MessageSendJSON("Conectado")
+				room.Mutex.RUnlock()
+			}else{
+				room.Mutex.RUnlock()
 			}
 		}
 	}
