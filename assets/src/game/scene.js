@@ -86,19 +86,13 @@ class Scene {
                 collision_map = new Layer(i, info, layer_data.data.map(a => a > 0 ? a - tiles.length : 0));
                 continue;
             }else if (layer_data.name == "gates") {
-                gates_map = new Layer(i, info, layer_data.data, tilemap);
+                gates_map = new Layer(i, info, layer_data.data, tilemap, tiles);
             }
 
-            for (let y = 0; y < info.map_height; y++) {
-                for (let x = 0; x < info.map_width; x++) {
-                    let place = y * info.map_height + x;
-                    if (layer_data.data[place] != 0) {
-                        tilemap.addFrame(tiles[layer_data.data[place] - 1], x * atlas.tilewidth, y * atlas.tileheight);
-                    }
-                }
-            }
+            let layer = new Layer(i, info, layer_data.data, tilemap, tiles);
+            layer.render()
 
-            layers.push(new Layer(i, info, layer_data.data, tilemap))
+            layers.push(layer)
         }
 
         return new TileMap(info, tiles, layers, collision_map, gates_map)
