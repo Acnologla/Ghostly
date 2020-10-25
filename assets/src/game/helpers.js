@@ -85,4 +85,5 @@ function checkCollision(first, other, ox = 0, oy = 0){
            first.y + first.height > other.y
 }
 
+
 export { Obj, checkCollision, CollidingObj, CollidingTile }

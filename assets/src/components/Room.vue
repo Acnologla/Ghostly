@@ -22,11 +22,13 @@ export default{
     async created(){
           const socket = new WebSocket(`ws://localhost:9000/ws/room?username=${this.$route.query.username}&roomID=${this.$route.params.room}`)
           socket.onmessage = (message) =>{
+              
               if (this.players.length == 0){
                   this.players = JSON.parse(message.data)
                   return
               }
               if (message.data == '"ping"') return;
+
               message = JSON.parse(message.data)
               console.log(message)
               if (message.Message == "Connected"){
