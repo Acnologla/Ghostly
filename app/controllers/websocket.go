@@ -59,6 +59,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 				})
 				ws.MessageSendJSON(room.GetUsernames())
 				room.Mutex.RUnlock()
+				//Get events from client
 				go func() {
 					var msg roomPackage.Event
 					for {
@@ -72,6 +73,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 						go handleEvent(room,username,msg)
 					}
 				}()
+				//Get events from room
 				go func(){
 					for {
 						playerIndex := room.PlayerIndex(username)
@@ -87,6 +89,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 						}
 					}
 				}()
+				//Send ping events and check if disconnected
 				for {
 					err := ws.MessageSendJSON("Ping")
 					if  err != nil || !pinged {

@@ -39,9 +39,9 @@ export default {
             else if (this.username.length > 15){
                 this.error = "Seu nome de usuario pode ter no maximo 15 caracteres"
             }
-           /* else if ( !/\W/g.test(this.username)){
+            else if ( !/^\w*$/g.test(this.username)){
                 this.error = "Seu nome nao pode ter caracteres especiais"
-            }*/
+            }
             else{
                 this.error = null
             }
