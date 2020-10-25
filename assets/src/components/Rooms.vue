@@ -4,7 +4,7 @@
         <button @click="create" id="create">Create room</button>
         <div style="cursor:pointer" @click="join(room.ID)" v-for="room in rooms" :key="room.ID">
             <h1>Codigo: {{room.ID}}</h1>
-             <h2>Jogadores: {{room.Players.length}}</h2>
+            <h2>Jogadores: {{room.Players.length}}</h2>
         </div>
     </div>
 </template>
@@ -17,27 +17,34 @@ export default {
             rooms: []
         }
     },
-    created(){
+    created() {
         axios.post("http://localhost:9000/room/list").then(rooms => {
             this.rooms = rooms.data
         })
     },
-    methods:{
-        async create(){
+    methods: {
+        async create() {
             const params = new URLSearchParams();
             const username = document.getElementById("username").value
-            params.append("owner",username)
-            const  room = await axios.post("http://localhost:9000/room",params)
-            console.log(room)
-            this.$router.push({name: "room", params: {room: room.data.ID}, query: {username}})
+            params.append("owner", username)
+            try {
+                const room = await axios.post("http://localhost:9000/room", params)
+                this.$router.push({ name: "room", params: { room: room.data }, query: { username } })
+            } catch (err) {
+                alert(err.response.data)
+            }
+
         },
-        async join(id){
+        async join(id) {
             const params = new URLSearchParams();
             const username = document.getElementById("username").value
-            params.append("username",username)
-            const  room = await axios.post(`http://localhost:9000/room/${id}/join`,params)
-            console.log(room)
-            this.$router.push({name: "room", params: {room: room.data.ID}, query: {username}})
+            params.append("username", username)
+            try {
+                const room = await axios.post(`http://localhost:9000/room/${id}/join`, params)
+                this.$router.push({ name: "room", params: { room: room.data }, query: { username } })
+            } catch (err) {
+                alert(err.response.data)
+            }
         }
     }
 }
