@@ -29,6 +29,19 @@ func deleteRoom(room *roomPackage.Room) {
 	delete(Rooms, room.ID)
 }
 
+func handleEvent(room *roomPackage.Room,username string, event roomPackage.Event){
+	switch event.Message{
+		case "Init":
+			room.Mutex.Lock()
+			defer room.Mutex.Unlock()
+			if username == room.Players[0].Name && len(room.Players) > 1 {
+				room.Start()
+				room.Broadcast(roomPackage.Event{
+					Message: "Start",
+				})
+			}
+	}
+}
 
 type WebSocket struct {
 	*revel.Controller
@@ -39,6 +52,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 		if room := getRoom(roomID); room != nil {
 			room.Mutex.RLock()
 			if room.FindPlayer(username) {
+				pinged := true
 				room.Broadcast(roomPackage.Event{
 					Author:  username,
 					Message: "Connected",
@@ -46,13 +60,16 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 				ws.MessageSendJSON(room.GetUsernames())
 				room.Mutex.RUnlock()
 				go func() {
-					var msg string
+					var msg roomPackage.Event
 					for {
 						err := ws.MessageReceiveJSON(&msg)
 						if err != nil {
 							return
 						}
-						println(msg)
+						if msg.Message == "pong"{
+							pinged = true
+						}
+						go handleEvent(room,username,msg)
 					}
 				}()
 				go func(){
@@ -71,7 +88,8 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 					}
 				}()
 				for {
-					if ws.MessageSendJSON("Ping") != nil {
+					err := ws.MessageSendJSON("Ping")
+					if  err != nil || !pinged {
 						room.Mutex.Lock()
 						room.RemovePlayer(username)
 						if len(room.Players) == 0 {
@@ -84,6 +102,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 						room.Mutex.Unlock()
 						return nil
 					}
+					pinged = false
 					time.Sleep(time.Second * 5)
 				}
 

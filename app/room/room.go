@@ -10,8 +10,8 @@ const (
 )
 
 type Event struct{
-	Message string
-	Author  string
+	Message string   `json:"Message"`
+	Author  string   `json:"Author"`
 }
 
 type Player struct{
@@ -77,8 +77,6 @@ func (room *Room) RemovePlayer(playerName string){
 }
 
 func (room *Room) Start() {
-	room.Mutex.Lock()
-	defer room.Mutex.Unlock()
 	if room.State != Started {
 		room.State = Started
 		go gameLoop(room)
