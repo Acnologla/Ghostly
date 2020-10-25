@@ -86,7 +86,7 @@ class Scene {
                 collision_map = new Layer(i, info, layer_data.data.map(a => a > 0 ? a - tiles.length : 0));
                 continue;
             }else if (layer_data.name == "gates") {
-                gates_map = new Layer(i, info, layer_data.data, tilemap);
+                gates_map = new Layer(i, info, layer_data.data, tilemap, tiles);
             }
 
             let layer = new Layer(i, info, layer_data.data, tilemap, tiles);

@@ -1,5 +1,6 @@
 import { Scene, app } from "./scene.js";
 import { Obj } from "./helpers.js";
+import { CollidingTile } from "./helpers.js"
 
 let scene;
 let resources;
@@ -64,7 +65,7 @@ function onStart() {
 
     // Sets as a object
     sprite.velocity = { x: 0, y: 0 };
-    scene.objects.push(new Obj(sprite));
+    scene.objects.push(new Obj(sprite, false));
 
     // Creates a player
     sprite = new PIXI.Sprite(resources["ghost.png"].texture);
@@ -76,7 +77,7 @@ function onStart() {
 
     // Sets as a object
     sprite.velocity = { x: 0, y: 0 };
-    scene.objects.push(new Obj(sprite));
+    scene.objects.push(new Obj(sprite, false));
 }
 
 function solveCollision(dt){
@@ -86,20 +87,24 @@ function solveCollision(dt){
 
     for (let i = 0; i < scene.objects.length; i++) {
         let obj = scene.objects[i];
+
         if (!obj.static) {
+            let colliding = []
 
             obj.move(obj.sprite.position.x + obj.sprite.velocity.x);
             let corrected = scene.tilemap.checkCollision("x", obj);
-
             if(corrected.length == 0) {
                 for (let j = 0; j < scene.objects.length; j++) {
                     if (i != j){
                         let corrected = obj.checkCollision("x", scene.objects[j]);
-                        if(corrected)break;
+                        if(corrected) {
+                            colliding.push(scene.objects[j]);
+                            break;
+                        }
                     }
                 }
-            }
-
+            } else colliding = colliding.concat(corrected);
+            
             obj.move(null, obj.sprite.position.y + obj.sprite.velocity.y);
             corrected = scene.tilemap.checkCollision("y", obj);
 
@@ -107,8 +112,19 @@ function solveCollision(dt){
                 for (let j = 0; j < scene.objects.length; j++) {
                     if (i != j){
                         let corrected = obj.checkCollision("y", scene.objects[j]);
-                        if(corrected)break;
+                        if(corrected){
+                            colliding.push(scene.objects[j]);
+                            break;
+                        }
                     }
+                }
+            } else colliding = colliding.concat(corrected);
+
+            for(let i = 0; i < colliding.length; i++){
+                if(colliding[i] instanceof CollidingTile && colliding[i].id === 3){
+                   scene.tilemap.gates_layer.set(colliding[i].x,colliding[i].y, 0, true);
+                   scene.tilemap.collision_layer.set(colliding[i].x,colliding[i].y, 0, false);
+                   scene.tilemap.gates_layer.render();
                 }
             }
         }

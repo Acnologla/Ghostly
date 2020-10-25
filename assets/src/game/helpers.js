@@ -2,7 +2,7 @@ let dir = {"x":"width", "y": "height"}
 let steps = 10;
 
 class Obj {
-    constructor(sprite){
+    constructor(sprite, collidable){
         this.sprite = sprite;
         this.onHover;
         this.static = false;
@@ -10,6 +10,8 @@ class Obj {
 
         this.toFuture = this.old;
         this.step = 0;
+
+        this.collidable = collidable;
     }
 
     interpolate(){
@@ -37,16 +39,20 @@ class Obj {
         let sprite_other = other.sprite;
         let rect_other = new PIXI.Rectangle(sprite_other.position.x, sprite_other.position.y, sprite_other.width, sprite_other.height);
         if(checkCollision(rect, rect_other)){
-            let correction = rect[axis] < this.old[axis] ? ((rect_other[axis] + rect_other[dir[axis]]) - rect[axis] ) : -((rect[axis] + rect[dir[axis]]) - rect_other[axis]);
+            if(other.collidable){
+                let correction = rect[axis] < this.old[axis] ? ((rect_other[axis] + rect_other[dir[axis]]) - rect[axis] ) : -((rect[axis] + rect[dir[axis]]) - rect_other[axis]);
 
-            if(Math.abs(correction) > sprite[dir[axis]])
-                return false;
-
-            if (axis == "x") {
-                this.move(sprite.position.x + correction)
-                return true;
+                if(Math.abs(correction) > sprite[dir[axis]])
+                    return false;
+    
+                if (axis == "x") {
+                    this.move(sprite.position.x + correction)
+                    return true;
+                } else {
+                    this.move(null, sprite.position.y + correction);
+                    return true;
+                }   
             } else {
-                this.move(null, sprite.position.y + correction);
                 return true;
             }
         }
@@ -54,6 +60,23 @@ class Obj {
     }
 }
 
+class CollidingObj {
+    constructor(id, x, y, w, h){
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.id = id;
+    }
+}
+
+class CollidingTile {
+    constructor(id, x, y){
+        this.x = x;
+        this.y = y;
+        this.id = id;
+    }
+}
 
 function checkCollision(first, other, ox = 0, oy = 0){
     return first.x < other.x + other.width &&
@@ -62,4 +85,4 @@ function checkCollision(first, other, ox = 0, oy = 0){
            first.y + first.height > other.y
 }
 
-export { Obj, checkCollision }
+export { Obj, checkCollision, CollidingObj, CollidingTile }

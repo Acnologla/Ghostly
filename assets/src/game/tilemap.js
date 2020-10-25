@@ -1,4 +1,4 @@
-import {checkCollision} from "./helpers.js"
+import { checkCollision, CollidingTile } from "./helpers.js"
 let dir = {"x":"width", "y": "height"}
 
 class Layer {
@@ -21,9 +21,22 @@ class Layer {
         }
     }
 
-    set(x, y, z) {
-        this.data[y * this.info.width + x] = z;
-        this.texture.clear();
+    set(x, y, z, rec = false) {
+        if(!this.data[y * this.info.map_width + x])
+            return;
+
+        this.data[y * this.info.map_width + x] = z;
+
+        if (rec) {
+            this.set(x, y-1, z, rec);
+            this.set(x, y+1, z, rec);
+            this.set(x-1, y, z, rec);
+            this.set(x+1, y, z, rec);
+        }
+        
+        if(this.texture){    
+            this.texture.clear();
+        }
     }
 
     get(x, y) { return this.data[y * this.info.width + x]; }
@@ -78,19 +91,21 @@ class TileMap {
         let tiles = this.getNextTiles(sprite.position.x, sprite.position.y); 
         for(let i = 0; i < tiles.length; i++){
             if(checkCollision(tiles[i], rect)){
-                collided.push({type: 1, id: tiles[i].obj_id, tilex: tiles[i].tile_x, tiley: tiles[i].tile_y})
+                let tile = tiles[i].obj_id;
+                collided.push(new CollidingTile(tile, tiles[i].tile_x,tiles[i].tile_y));
+
                 let correction = rect[axis] < target.old[axis] ? ((tiles[i][axis] + tiles[i][dir[axis]]) - rect[axis] ) : -((rect[axis] + rect[dir[axis]]) - tiles[i][axis] );
                 
                 if(Math.abs(correction) > sprite[dir[axis]])
-                    return false;
+                    return collided;
     
                 if(axis == "x") {
                     target.move(sprite.position.x + correction);
-                    return true;
                 } else {
                     target.move(null, sprite.position.y + correction);
-                    return true;
                 }
+
+                break;
             }
         }
         return collided;
