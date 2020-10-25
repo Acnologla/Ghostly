@@ -1,9 +1,23 @@
+let dir = {"x":"width", "y": "height"}
+let steps = 10;
+
 class Obj {
     constructor(sprite){
         this.sprite = sprite;
         this.onHover;
         this.static = false;
         this.old = {x: this.sprite.position.x, y: this.sprite.position.y}
+
+        this.toFuture = this.old;
+        this.step = 0;
+    }
+
+    interpolate(){
+        if(this.step < steps){
+            let step = (1/steps);
+            this.sprite.position.x += (this.toFuture.position.x - this.sprite.position.x)*step;
+            this.sprite.position.y += (this.toFuture.position.y - this.sprite.position.y)*step;
+        }
     }
 
     move(x = null, y = null) {
@@ -15,6 +29,28 @@ class Obj {
             this.old.x = this.sprite.position.x;
             this.sprite.position.x = x;
         }
+    }
+
+    checkCollision(axis, other){
+        let sprite = this.sprite;
+        let rect = new PIXI.Rectangle(sprite.position.x, sprite.position.y, sprite.width, sprite.height);
+        let sprite_other = other.sprite;
+        let rect_other = new PIXI.Rectangle(sprite_other.position.x, sprite_other.position.y, sprite_other.width, sprite_other.height);
+        if(checkCollision(rect, rect_other)){
+            let correction = rect[axis] < this.old[axis] ? ((rect_other[axis] + rect_other[dir[axis]]) - rect[axis] ) : -((rect[axis] + rect[dir[axis]]) - rect_other[axis]);
+
+            if(Math.abs(correction) > sprite[dir[axis]])
+                return false;
+
+            if (axis == "x") {
+                this.move(sprite.position.x + correction)
+                return true;
+            } else {
+                this.move(null, sprite.position.y + correction);
+                return true;
+            }
+        }
+        return false;
     }
 }
 
