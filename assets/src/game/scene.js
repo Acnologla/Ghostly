@@ -7,6 +7,11 @@ PIXI.AbstractRenderer.autoDensity = true;
 class Camera {
     constructor() {
         this.container = new PIXI.Container();
+        this.container.filters = [new PIXI.filters.CRTFilter({vignetting: 0}), new PIXI.filters.BulgePinchFilter({
+            radius:1000,
+            strength: 0.1,
+        }),
+        new PIXI.filters.RGBSplitFilter([5,0], [0,0], [0,0])]
     }
 
     addChild(obj) {

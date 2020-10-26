@@ -60,6 +60,11 @@ function createPlrSprite(){
     obj.handleCollision = function(tile){
         if(tile instanceof CollidingTile && tile.id === 3){
             removeGate(tile.x, tile.y)
+        } else if(!(tile instanceof CollidingTile)){
+            let idx = scene.objects.findIndex(a => tile == a);
+            if(idx != -1){
+                removeObj(idx);
+            }
         }
     }
     
@@ -83,6 +88,7 @@ function removeGate(x, y){
 }
 
 function removeObj(i){
+    scene.camera.container.removeChild(scene.objects[i].sprite)
     scene.objects.splice(i,1);
 }
 
