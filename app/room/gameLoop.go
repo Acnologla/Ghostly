@@ -37,7 +37,7 @@ type scene struct {
 	tilemap layer
 }
 
-var colission = layer{}
+var collision = layer{}
 
 func checkColission(first, other *shape, ox, oy int) bool {
 	return first.X < other.Y+other.Width &&
@@ -70,24 +70,24 @@ func (coll 	layer) getNextTiles(x, y int) (tiles []*shape, ids []int) {
 	return
 }
 
-func (coll layer) checkCollision(axis int, target object) []shape, []int {
+func (coll layer) checkCollision(axis int, target object) ([]shape, []int) {
 
 	targetShape := target.Shape
 	collided := []shape{}
 	collided_ids := []int{}
 
-	tiles, ids := coll.getNextTiles(targetShape.X, targetShape.Y)
-	for i, tile := range tiles {
+	tiles, _ := coll.getNextTiles(targetShape.X, targetShape.Y)
+	for _, tile := range tiles {
 		if checkColission(tile, &targetShape, 0, 0) {
-			id := ids[i]
-			correction := 0
+//			id := ids[i]
+			/*correction := 0
 			if axis == 0 {
 				if targetShape.X < targetShape.OldX {
 					correction = (tile.X + tile.Width) - targetShape.X
 				} else {
 					correction = -((targetShape.X + targetShape.Width) - tile.X);
 				}
-			}
+			}*/
 		}
 	}
 	return collided, collided_ids
@@ -102,7 +102,7 @@ func gameLoop(room *Room) {
 
 func init() {
 	collisionBytes, _ := ioutil.ReadFile("./app/room/collision.json")
-	json.Unmarshal([]byte(collisionBytes), &colission)
+	json.Unmarshal([]byte(collisionBytes), &collision)
 	collision.Width = 100
 	collision.Height = 100
 }

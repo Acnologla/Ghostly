@@ -31,13 +31,15 @@ func deleteRoom(room *roomPackage.Room) {
 
 func handleEvent(room *roomPackage.Room,username string, event roomPackage.Event){
 	switch event.Message{
-		case "Init":
+		case "Move":
 			room.Mutex.Lock()
 			defer room.Mutex.Unlock()
-			if username == room.Players[0].Name && len(room.Players) > 1 {
-				room.Start()
+			if room.FindPlayer(username){
+				//TODO validate(event.Data)
 				room.Broadcast(roomPackage.Event{
-					Message: "Start",
+					Message: "Move",
+					Author: username,
+					Data: event.Data,
 				})
 			}
 	}
@@ -69,8 +71,9 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 						}
 						if msg.Message == "pong"{
 							pinged = true
+						}else{
+							go handleEvent(room,username,msg)
 						}
-						go handleEvent(room,username,msg)
 					}
 				}()
 				//Get events from room
