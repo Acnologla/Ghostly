@@ -3,54 +3,41 @@ package room
 import (
 	"encoding/json"
 	"io/ioutil"
-	"reflect"
 	"time"
 )
 
-const fps = 60
+const fps = 30
 
 type object struct {
 	ID    uint
 	Shape shape
 }
 
-type colissionLayer struct {
-	Data   []int `json:"data"`
-	Height int   `json:"height"`
-	Width  int   `json:"width"`
+type layer struct {
+	Data      []int `json:"data"`
+	MapHeight int   `json:"height"`
+	MapWidth  int   `json:"width"`
+	Width     int
+	Height    int
 }
-
-func (this *colissionLayer) GetNextTiles(x, y int) (tiles []*shape) {
-	place := [2]int{x / this.Width, y / this.Height}
-	for y := -1; y < 2; y++ {
-		xtile := x + place[0]
-		ytile := y + place[1]
-		value := this.Data[ytile*this.Width+xtile]
-		if y+place[1] >= 0 && x+place[0] >= 0 && value != 0 {
-			hei := this.Height
-			if value == 2 {
-				hei = hei / 2
-			}
-			tiles = append(tiles, &shape{
-				X:      xtile * this.Width,
-				Y:      ytile * this.Height,
-				Width:  this.Width,
-				Height: hei,
-			})
-		}
-	}
-	return
-}
-
-var colission = colissionLayer{}
 
 type shape struct {
-	X        int
-	Y        int
-	Width    int
-	Height   int
-	Velocity int
+	X      int
+	Y      int
+	Width  int
+	Height int
+	VelX   int
+	VelY   int
+	OldX   int
+	OldY   int
 }
+
+type scene struct {
+	objs    []object
+	tilemap layer
+}
+
+var colission = layer{}
 
 func checkColission(first, other *shape, ox, oy int) bool {
 	return first.X < other.Y+other.Width &&
@@ -59,42 +46,51 @@ func checkColission(first, other *shape, ox, oy int) bool {
 		first.Y+first.Height > other.Y
 }
 
-func fixCollision(axis string, target *shape, others []interface{}) {
-	oldX := target.X
-	oldY := target.Y
-	if axis == "x" {
-		target.X += target.Velocity
-	} else {
-		target.Y += target.Velocity
+func (coll 	layer) getNextTiles(x, y int) (tiles []*shape, ids []int) {
+	place := [2]int{x / coll.Width, y / coll.Height}
+	for y := -1; y < 2; y++ {
+		xtile := x + place[0]
+		ytile := y + place[1]
+		idx := ytile*coll.MapWidth + xtile
+		value := coll.Data[idx]
+		if y+place[1] >= 0 && x+place[0] >= 0 && value != 0 {
+			hei := coll.Height
+			if value == 2 {
+				hei = hei / 2
+			}
+			tiles = append(tiles, &shape{
+				X:      xtile * coll.Width,
+				Y:      ytile * coll.Height,
+				Width:  coll.Width,
+				Height: hei,
+			})
+			ids = append(ids, value)
+		}
 	}
-	for _, other := range others {
-		otherType := reflect.Indirect(reflect.ValueOf(other)).Type()
-		if otherType.String() == "room.colissionLayer" {
-			realOther := other.(*colissionLayer)
-			tiles := realOther.GetNextTiles(target.X, target.Y)
-			for _, tile := range tiles {
-				if checkColission(tile, target, 0, 0) {
-					num := 0
-					if axis == "x" {
-						if target.X < oldX {
-							num = (tile.X + tile.Width) - target.X
-						} else {
-							num = -((tile.X + tile.Width) - target.X)
-						}
-						target.X += num
-					} else {
-						if target.Y < oldY {
-							num = (tile.Y + tile.Height) - target.Y
-						} else {
-							num = -((tile.Y + tile.Height) - target.Y)
-						}
-						target.Y += num
-					}
-					break
+	return
+}
+
+func (coll layer) checkCollision(axis int, target object) []shape, []int {
+
+	targetShape := target.Shape
+	collided := []shape{}
+	collided_ids := []int{}
+
+	tiles, ids := coll.getNextTiles(targetShape.X, targetShape.Y)
+	for i, tile := range tiles {
+		if checkColission(tile, &targetShape, 0, 0) {
+			id := ids[i]
+			correction := 0
+			if axis == 0 {
+				if targetShape.X < targetShape.OldX {
+					correction = (tile.X + tile.Width) - targetShape.X
+				} else {
+					correction = -((targetShape.X + targetShape.Width) - tile.X);
 				}
 			}
 		}
 	}
+	return collided, collided_ids
 }
 
 func gameLoop(room *Room) {
@@ -107,4 +103,6 @@ func gameLoop(room *Room) {
 func init() {
 	collisionBytes, _ := ioutil.ReadFile("./app/room/collision.json")
 	json.Unmarshal([]byte(collisionBytes), &colission)
+	collision.Width = 100
+	collision.Height = 100
 }

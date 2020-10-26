@@ -11,7 +11,6 @@ let plr;
 
 // Starts Game and Graphics
 async function start() {
-
     scene = new Scene();
     resources = await loadToStage(scene);
     // Game loop start
@@ -77,11 +76,6 @@ function createGhostSprite(){
     scene.objects.push(new Obj(sprite, false));
 }
 
-function onStart() {
-    createPlrSprite()
-    createGhostSprite();
-}
-
 function removeGate(x, y){
     scene.tilemap.gates_layer.set(x, y, 0, true);
     scene.tilemap.collision_layer.set(x, y, 0, false);
@@ -135,6 +129,13 @@ function solveCollision(dt){
             }
         }
     }
+}
+
+// Game stage
+
+function onStart() {
+    createPlrSprite()
+    createGhostSprite();
 }
 
 function gameLoop(dt) {

@@ -5,6 +5,7 @@ import (
 	"github.com/acnologla/Ghostly/app/room"
 	"github.com/revel/revel"
 	"unsafe"
+	"regexp"
 )
 
 type partialRoom struct {
@@ -48,7 +49,11 @@ func (c App) GetRooms() revel.Result {
 
 func (c App) JoinRoom(username string, roomID string) revel.Result {
 	c.Response.Status = 400
-	if username != "" {
+	c.Validation.Required(username)
+	c.Validation.MaxSize(username, 15)
+	c.Validation.MinSize(username, 4)
+	c.Validation.Match(username, regexp.MustCompile("^\\w*$"))
+	if  !c.Validation.HasErrors(){
 		if room := getRoom(roomID); room != nil {
 			room.Mutex.Lock()
 			defer room.Mutex.Unlock()
@@ -70,7 +75,11 @@ func (c App) JoinRoom(username string, roomID string) revel.Result {
 }
 
 func (c App) CreateRoom(owner string) revel.Result {
-	if owner != "" {
+	c.Validation.Required(owner)
+	c.Validation.MaxSize(owner, 15)
+	c.Validation.MinSize(owner, 4)
+	c.Validation.Match(owner, regexp.MustCompile("^\\w*$"))
+	if !c.Validation.HasErrors() {
 		roomCreated := room.Room{}
 		roomCreated.Players = make([]*room.Player, 0, 10)
 		roomCreated.AddPlayer(owner)
