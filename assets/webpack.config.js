@@ -15,8 +15,8 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader'
-        ],
-      },      {
+        ]
+      }, {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -41,7 +41,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      vue$: 'vue/dist/vue.esm.js'
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
@@ -49,7 +49,7 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
-    hot: false,
+    hot: false
   },
   performance: {
     hints: false

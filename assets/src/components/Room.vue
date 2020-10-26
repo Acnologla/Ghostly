@@ -9,9 +9,6 @@
         <p v-for="player in players" :key="player">
             {{player}}
         </p>
-        <button @click="init" v-if="username == players[0]">
-            Iniciar jogo
-        </button>
     </div>
 </template>
 <script>
@@ -26,11 +23,10 @@ export default{
         }
     },
     methods:{
-        init(){
-            if (2 > this.players.length ){
-                return alert("Precisa ter ao menos 2 jogadores para iniciar um jogo")
-            }
-            this.ws.send(JSON.stringify({Message: "Init"}))
+        move(){
+            this.ws.send(JSON.stringify({
+                Message: "Move"
+            }))
         }
     },
     async created(){
@@ -48,18 +44,20 @@ export default{
                   return;
               }
               console.log(message)
-              if (message.Message == "Connected"){
-                  if (message.Author === this.username) return;
-                  this.players.push(message.Author)
+              switch(message.Message){
+                  case "Connected":
+                    if (message.Author === this.username) return;
+                    this.players.push(message.Author)
+                  break
+                  case "Disconnect":
+                    const index = this.players.indexOf(message.Author)
+                    this.players.splice(index,1)
+                  break
+                  case "Move":
+                    console.log(`O player ${message.Author} se moveu para ${message.Data[0]}X | ${message.Data[1]}Y`)
+                  break
               }
-              if (message.Message == "Disconnect"){
-                  const index = this.players.indexOf(message.Author)
-                  console.log(index)
-                  this.players.splice(index,1)
-              }
-              if (message.Message == "Start"){
-                  alert("Jogo começou")
-              }
+
           }
           socket.onclose = () =>{
               this.$router.push({name: "rooms"})
