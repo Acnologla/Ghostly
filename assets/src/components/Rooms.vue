@@ -1,15 +1,67 @@
 <template>
-    <div>
+    <div id="page">
         <p v-if="error">{{error}}</p>
-        <input  @change="save" v-model="username" placeholder="username" >
+        <input  id="username" @change="save" v-model="username" placeholder="username" >
         <button @click="create" id="create">Create room</button>
         <input placeholder="join Room" @click="join" id ="join">
-        <div style="cursor:pointer" @click="join(room.ID)" v-for="room in rooms" :key="room.ID">
+        <div id="room" style="cursor:pointer" @click="join(room.ID)" v-for="room in rooms" :key="room.ID">
             <h1>Codigo: {{room.ID}}</h1>
             <h2>Jogadores: {{room.Players.length}}</h2>
         </div>
     </div>
 </template>
+
+<style scoped>
+
+    #room {
+        padding:20px;
+        background: rgb(31, 31, 31);  
+        color: #fff;
+        text-align: center; 
+    }
+
+    #page{
+        background: rgb(39, 39, 39);
+        position: absolute;
+        width:100vw;
+        height:100vw;
+    }
+
+    input {
+        margin-left: auto;
+        display: -webkit-box;
+        margin-right: auto;
+        background: none;
+        border: none;
+        padding: 15px;
+        background: rgb(51, 51, 51);
+        margin: 20px;
+        border-radius: 10px;
+        left: 50%;
+        color: #fff;
+        position: relative;
+        transform: translate(-50%, 0);
+    }
+
+    button {
+        display: -webkit-box;
+        margin-right: auto;
+        background: none;
+        border: none;
+        padding: 15px;
+        background: rgb(51, 51, 51);
+        margin: 20px;
+        border-radius: 10px;
+        left: 50%;
+        color: #fff;
+        position: relative;
+        transform: translate(-50%, 0);
+    }
+
+
+
+</style>
+
 <script>
 import axios from "axios"
 export default {
