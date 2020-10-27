@@ -38,10 +38,10 @@ class Scene {
   // Loads map files
   loadMap (loader, name) {
     loader
-      .add(name + '_sprites', 'src/assets/maps/' + name + '/tiles.png')
-      .add(name + '_atlas', 'src/assets/maps/' + name + '/tileset.json')
-      .add(name + '_map', 'src/assets/maps/' + name + '/map.json')
-      .add(name + '_gates', 'src/assets/maps/' + name + '/gates.json')
+      .add(name + '_sprites', '../src/assets/maps/' + name + '/tiles.png')
+      .add(name + '_atlas', '../src/assets/maps/' + name + '/tileset.json')
+      .add(name + '_map', '../src/assets/maps/' + name + '/map.json')
+      .add(name + '_gates', '../src/assets/maps/' + name + '/gates.json')
   }
 
   getTiles (name, info, resources) {

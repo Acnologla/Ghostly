@@ -8,9 +8,10 @@ let resources
 let following
 const speed = 6
 let plr
+let sendMove
 
 // Starts Game and Graphics
-async function start () {
+async function start (move) {
   scene = new Scene()
   resources = await loadToStage(scene)
   // Game loop start
@@ -20,13 +21,15 @@ async function start () {
   ticker.addOnce(onStart)
   ticker.add(gameLoop)
 
+  sendMove = move;
+
   return ticker
 }
 
 // Starts the loading screen and things like that.
 async function loadToStage (scene) {
   return new Promise((resolve) => {
-    const loader = new PIXI.Loader().add('ghost.png', 'src/assets/sprites/ghost.png')
+    const loader = new PIXI.Loader().add('ghost.png', '../src/assets/sprites/ghost.png')
     scene.loadMap(loader, 'room')
     loader.load((_, resources) => {
       scene.tilemap = scene.compileMap(resources, 'room')
@@ -52,33 +55,20 @@ function createPlrSprite () {
   sprite.scale.set(0.5, 0.5)
 
   scene.camera.addChild(sprite)
+
   following = sprite
 
   sprite.velocity = { x: 0, y: 0 }
 
   const obj = new Obj(sprite, false)
-  obj.handleCollision = function (tile) {
-    if (tile instanceof CollidingTile && tile.id === 3) {
-      removeGate(tile.x, tile.y)
-    } else if (!(tile instanceof CollidingTile)) {
-      const idx = scene.objects.findIndex(a => tile === a)
-      if (idx !== -1) {
-        removeObj(idx)
-      }
-    }
-  }
 
   scene.objects.push(obj)
-  plr = scene.objects[0].sprite
-}
 
-function createGhostSprite () {
-  const sprite = new PIXI.Sprite(resources['ghost.png'].texture)
-  sprite.position.set(300, 500)
-  sprite.scale.set(0.5, 0.5)
-  scene.camera.addChild(sprite)
-  sprite.velocity = { x: 0, y: 0 }
-  scene.objects.push(new Obj(sprite, false))
+  plr = scene.objects[0].sprite
+
+  scene.objects[0].onMove = function(){
+    sendMove(plr.position.x, plr.position.y)
+  }
 }
 
 function removeGate (x, y) {
@@ -137,11 +127,37 @@ function solveCollision (dt) {
   }
 }
 
+// Wot
+
+let players = {}
+
+function AddPlayer(id){
+  const sprite = new PIXI.Sprite(resources['ghost.png'].texture)
+  sprite.position.set(300, 500)
+  sprite.scale.set(0.5, 0.5)
+  scene.camera.addChild(sprite)
+  sprite.velocity = { x: 0, y: 0 }
+  scene.objects.push(new Obj(sprite, false))
+  players[id] = sprite;
+}
+
+function RemPlayer(id){
+  scene.camera.container.removeChild(players[id]);
+  delete players[id];
+}
+
+function MvPlr(id, x, y){
+
+  console.log(players[id], players, id);
+  players[id].position.x = x;
+  players[id].position.y = y;
+}
+
+
 // Game stage
 
 function onStart () {
   createPlrSprite()
-  createGhostSprite()
 }
 
 function gameLoop (dt) {
@@ -150,4 +166,4 @@ function gameLoop (dt) {
   scene.camera.toFollow(following, dt, 0.2)
 }
 
-export { start, Scene, app }
+export { start, Scene, app, AddPlayer, RemPlayer, MvPlr }

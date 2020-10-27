@@ -31,6 +31,9 @@ class Obj {
       this.old.x = this.sprite.position.x
       this.sprite.position.x = x
     }
+    if(this.onMove && (this.old.y != this.sprite.position.y || this.old.x != this.sprite.position.x)){
+      this.onMove(this.sprite.position.x, this.sprite.position.y)
+    }
   }
 
   checkCollision (axis, other) {
