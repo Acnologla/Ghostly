@@ -1,15 +1,20 @@
+FROM node:12-alpine as publicBuilder
+WORKDIR /build
+COPY . .
+RUN cd assets 
+RUN npm i
+RUN npm run build
+
 FROM golang:alpine AS builder
 ENV GOOS=linux \
     GOARCH=amd64
 
 WORKDIR /build
-
-COPY go.mod .
+COPY . .
+COPY --from=publicBuilder /build/public /build/public
 RUN go mod download
 RUN go get github.com/revel/cmd/revel
 
-
-COPY . .
 RUN revel package github.com/acnologla/Ghostly prod
 RUN tar -xf Ghostly.tar.gz --directory /build/app
 
