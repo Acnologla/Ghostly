@@ -5,7 +5,7 @@ none
 routes/
 assets/.DS_Store
 assets/node_modules/
-public/
+/public
 log/
 assets/npm-debug.log
 .vscode

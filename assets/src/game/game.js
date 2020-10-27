@@ -29,7 +29,7 @@ async function start (move) {
 // Starts the loading screen and things like that.
 async function loadToStage (scene) {
   return new Promise((resolve) => {
-    const loader = new PIXI.Loader().add('ghost.png', '../src/assets/sprites/ghost.png')
+    const loader = new PIXI.Loader().add('ghost.png', '/public/sprites/ghost.png')
     scene.loadMap(loader, 'room')
     loader.load((_, resources) => {
       scene.tilemap = scene.compileMap(resources, 'room')

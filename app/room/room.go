@@ -19,6 +19,7 @@ type Event struct {
 // Player stores
 type Player struct {
 	Name    string
+	Connected bool
 	Channel chan Event
 }
 
@@ -29,7 +30,6 @@ type Room struct {
 	State   int
 	Events  chan string
 	Mutex   sync.RWMutex
-
 	Objects []*object
 	Tilemap []layer
 }

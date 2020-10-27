@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/main.js',
@@ -39,6 +40,7 @@ module.exports = {
       }
     ]
   },
+
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.esm.js'
@@ -59,7 +61,6 @@ module.exports = {
   },
   devtool: '#eval-source-map'
 }
-
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
@@ -69,7 +70,14 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
+      new CopyWebpackPlugin(
+  
+         [
+          // Copy directory contents to {output}/to/directory/ 
+          { from: path.resolve(__dirname,"./public"), to: path.resolve(__dirname, '../public/') }
+        ]
+      ),
+      new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
         warnings: false

@@ -55,6 +55,14 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 		if room := getRoom(roomID); room != nil {
 			room.Mutex.RLock()
 			if room.FindPlayer(username) {
+				playerIndex := room.PlayerIndex(username)
+				player := room.Players[playerIndex]
+				if player.Connected{
+					room.Mutex.RUnlock()
+					return nil
+				}else{
+					player.Connected = true
+				}
 				pinged := true
 				room.Broadcast(roomPackage.Event{
 					Author:  username,
@@ -69,6 +77,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 						err := ws.MessageReceiveJSON(&msg)
 						if err != nil {
 							fmt.Println(err)
+							return
 						}
 						if msg.Message == "pong"{
 							pinged = true
@@ -80,9 +89,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 				//Get events from room
 				go func(){
 					for {
-						playerIndex := room.PlayerIndex(username)
 						if playerIndex != -1{
-							player := *room.Players[playerIndex]
 							message := <- player.Channel
 							err := ws.MessageSendJSON(message)
 							if err !=nil{

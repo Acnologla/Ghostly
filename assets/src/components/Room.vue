@@ -1,14 +1,6 @@
 <template>
-    <div id="page">
-        <h1 v-if="players.length > 0">
-            Dono da sala: {{players[0]}}
-        </h1>
-        <h2>
-            Players:
-        </h2>
-        <p v-for="player in players" :key="player">
-            {{player}}
-        </p>
+    <div>
+      <div id="page"></div>
     </div>
 </template>
 <script>
@@ -73,7 +65,6 @@ export default{
                         return;
                     }
                     AddPlayer(message.Author);
-                    console.log("queeeeeeeeeeeEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                     break
                   case "Disconnect":
                     RemPlayer(message.Author);

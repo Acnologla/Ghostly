@@ -12,16 +12,20 @@
   },
   "standard": {
     "ignore": [
-      "src/deps"
+      "public/"
     ]
   },
   "dependencies": {
     "axios": "^0.21.0",
+    "copy-webpack-plugin": "^4.4.2",
     "eslint": "^7.12.0",
+    "i": "^0.3.6",
+    "npm": "^6.14.8",
     "standard": "^15.0.0",
     "transform-runtime": "0.0.0",
     "vue": "^2.5.11",
-    "vue-router": "^3.4.7"
+    "vue-router": "^3.4.7",
+    "webpack": "^3.12.0"
   },
   "browserslist": [
     "> 1%",
@@ -39,7 +43,6 @@
     "file-loader": "^1.1.4",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
-    "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }
 }

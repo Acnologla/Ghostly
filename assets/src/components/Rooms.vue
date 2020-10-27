@@ -3,7 +3,7 @@
         <p v-if="error">{{error}}</p>
         <input  id="username" @change="save" v-model="username" placeholder="username" >
         <button @click="create" id="create">Create room</button>
-        <input placeholder="join Room" @click="join" id ="join">
+        <input v-on:keyup.enter="join(null)" placeholder="join Room" id ="join">
         <div id="room" style="cursor:pointer" @click="join(room.ID)" v-for="room in rooms" :key="room.ID">
             <h1>Codigo: {{room.ID}}</h1>
             <h2>Jogadores: {{room.Players.length}}</h2>
