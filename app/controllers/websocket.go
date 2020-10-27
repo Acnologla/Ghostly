@@ -5,6 +5,7 @@ import (
 	"github.com/revel/revel"
 	"sync"
 	"time"
+	"fmt"
 )
 
 var Rooms = map[string]*roomPackage.Room{}
@@ -67,7 +68,7 @@ func (c WebSocket) Index(username string, roomID string, ws revel.ServerWebSocke
 					for {
 						err := ws.MessageReceiveJSON(&msg)
 						if err != nil {
-							return
+							fmt.Println(err)
 						}
 						if msg.Message == "pong"{
 							pinged = true

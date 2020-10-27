@@ -13,7 +13,7 @@ const (
 type Event struct {
 	Message string `json:"Message"`
 	Author  string `json:"Author"`
-	Data    [2]int `json:"Data"`
+	Data    [2]float32 `json:"Data"`
 }
 
 // Player stores

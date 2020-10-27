@@ -25,10 +25,14 @@ export default {
         axios.post("http://localhost:9000/room/list").then(rooms => {
             this.rooms = rooms.data
         })
-        setInterval(() => {
-            axios.post("http://localhost:9000/room/list").then(rooms => {
-                this.rooms = rooms.data
-            })
+        const interval = setInterval(() => {
+            if (this.$route.name === "rooms"){
+                axios.post("http://localhost:9000/room/list").then(rooms => {
+                    this.rooms = rooms.data
+                })
+            }else{
+                clearInterval(interval)
+            }
         }, 5000)
     },
     methods: {
