@@ -1,8 +1,10 @@
 <p align="center"><img src="./assets/src/assets/sprites/ghost.png" alt="Gray shape shifter" height="60"/></p>
 <h1 align="center">Ghostly</h1>
 <br>
+<p align="center">
 <img src="ghost.gif"/>
 <img src="sata.png"/>
+ <p>
 
 ## :zap: O que é?
 Era para ser um joguinho feito para o evento do Zuraaa! list, porém, devido a falta de tempo e problemas na vida pessoal de um dos autores virou outra coisa.
