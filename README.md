@@ -23,4 +23,4 @@ e
 npm run dev
 ``
 e acessar
-``localhost:8080/rooms``
+``localhost:8080``
