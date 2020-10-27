@@ -6,8 +6,9 @@ RUN npm run build
 
 FROM golang:alpine AS builder
 ENV GOOS=linux \
-    GOARCH=amd64
-
+    GOARCH=amd64 \
+    GO111MODULE=on
+    
 WORKDIR /build
 COPY . .
 COPY --from=publicBuilder /assets /build/public
