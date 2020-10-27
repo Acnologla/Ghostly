@@ -1,7 +1,6 @@
 <p align="center"><img src="./assets/src/assets/sprites/ghost.png" alt="Gray shape shifter" height="60"/></p>
 <h1 align="center">Ghostly</h1>
-<p align="center">Um jogo de teste feito com Golang e PIXI.JS</p>
-
+<br>
 <img src="ghost.gif"/>
 <img src="sata.png"/>
 
