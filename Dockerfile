@@ -1,5 +1,5 @@
 FROM node:12-alpine as publicBuilder
-WORKDIR /build
+WORKDIR /assets
 COPY ./assets .
 RUN npm i
 RUN npm run build
@@ -10,7 +10,7 @@ ENV GOOS=linux \
 
 WORKDIR /build
 COPY . .
-COPY --from=publicBuilder /build/public /build/public
+COPY --from=publicBuilder /assets /build/public
 RUN go mod download
 RUN go get github.com/revel/cmd/revel
 
