@@ -1,7 +1,6 @@
 FROM node:12-alpine as publicBuilder
 WORKDIR /build
-COPY . .
-RUN cd assets 
+COPY ./assets .
 RUN npm i
 RUN npm run build
 
@@ -25,5 +24,5 @@ WORKDIR /dist
 COPY --from=builder /build/app /dist
 
 RUN chmod +x /dist/Ghostly.tar.gz
-
+EXPOSE 9000
 ENTRYPOINT ./Ghostly.tar.gz
