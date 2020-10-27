@@ -147,8 +147,9 @@ function RemPlayer(id){
 }
 
 function MvPlr(id, x, y){
-
-  console.log(players[id], players, id);
+  if (!players[id]) {
+    AddPlayer(id)
+  }
   players[id].position.x = x;
   players[id].position.y = y;
 }

@@ -48,6 +48,11 @@ export default{
           socket.onmessage = async (message) => {
               if (this.players.length == 0){
                   this.players = JSON.parse(message.data)
+                  for(let i = 0; i < this.players.length; i++) {
+                      if(this.username != this.players[i]){
+                        AddPlayer(this.players[i]);
+                      }
+                  }
                   return
               }
 
