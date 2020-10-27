@@ -16,6 +16,8 @@
 import { start, app, AddPlayer, RemPlayer, MvPlr } from "../game/game.js";
 let ticker;
 
+let last = Date.now();
+
 export default{
     name: "room",
     data(){
@@ -28,10 +30,14 @@ export default{
     },
     methods:{
         move(x,y){
-            this.ws.send(JSON.stringify({
-                Message: "Move",
-                Data: [x,y]
-            }))
+            if(Date.now() - last >= (1000/30)){
+                console.log("sending")
+                this.ws.send(JSON.stringify({
+                    Message: "Move",
+                    Data: [x,y]
+                }))
+                last = Date.now()
+            } 
         }
     },
     async created(){
@@ -69,7 +75,7 @@ export default{
                     break
                   case "Move":
                     if (message.Author == this.username)return;
-                    //MvPlr(message.Author, message.Data[0], message.Data[1])
+                    MvPlr(message.Author, message.Data[0], message.Data[1])
                     console.log(`O player ${message.Author} se moveu para ${message.Data[0]}X | ${message.Data[1]}Y`)
                     break
               }
