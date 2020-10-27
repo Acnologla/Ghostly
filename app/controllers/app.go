@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"crypto/rand"
+	"github.com/acnologla/Ghostly/app/ratelimit"
 	"github.com/acnologla/Ghostly/app/room"
 	"github.com/revel/revel"
 	"unsafe"
@@ -89,4 +90,9 @@ func (c App) CreateRoom(owner string) revel.Result {
 	}
 	c.Response.Status = 400
 	return c.RenderText("Invalid username")
+}
+
+
+func init(){
+	revel.InterceptFunc(ratelimit.Limit ,revel.BEFORE,&App{})
 }

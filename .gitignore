@@ -6,6 +6,7 @@ routes/
 assets/.DS_Store
 assets/node_modules/
 public/
+log/
 assets/npm-debug.log
 .vscode
 go.sum
