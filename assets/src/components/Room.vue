@@ -34,7 +34,7 @@ export default{
     },
     async created(){
 
-          const socket = new WebSocket(`ws://localhost:9000/ws/room?username=${this.username}&roomID=${this.$route.params.room}`)
+          const socket = new WebSocket(`ws://${window.location.host}/ws/room?username=${this.username}&roomID=${this.$route.params.room}`)
           this.ws = socket
 
           socket.onmessage = async (message) => {

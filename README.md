@@ -14,14 +14,5 @@ Ande por uma casinha como se voce fosse um fantasma. Não há nada, além do inc
 
 ## :question: Como usar?
 Use 
-```cd %GOPATH%/src/github.com/acnologla/Ghostly```
-Após isso, é bom garantir se tem o golang instalado e então utilizar
-```revel run -a github.com/acnologla/Ghostly```
-Após isso, é necessario ligar o VUE em Development para teste com 
-```cd ./assets```
-e
-``
-npm run dev
-``
-e acessar
-``localhost:8080``
+```docker build --tag Ghostly .```
+```docker run -d -p 9000:9000 Ghostly```

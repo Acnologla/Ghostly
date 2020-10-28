@@ -64,6 +64,7 @@
 
 <script>
 import axios from "axios"
+import url from "../game/url.js"
 export default {
     name: "rooms",
     data() {
@@ -74,12 +75,12 @@ export default {
         }
     },
     created() {
-        axios.post("http://localhost:9000/room/list").then(rooms => {
+        axios.post(`${url()}/room/list`).then(rooms => {
             this.rooms = rooms.data
         })
         const interval = setInterval(() => {
             if (this.$route.name === "rooms"){
-                axios.post("http://localhost:9000/room/list").then(rooms => {
+                axios.post("/room/list").then(rooms => {
                     this.rooms = rooms.data
                 })
             }else{
@@ -108,7 +109,7 @@ export default {
             const params = new URLSearchParams();
             params.append("owner", this.username)
             try {
-                const room = await axios.post("http://localhost:9000/room", params)
+                const room = await axios.post("/room", params)
                 this.$router.push({ name: "room", params: { room: room.data }})
             } catch (err) {
                 alert(err.response.data)
@@ -123,7 +124,7 @@ export default {
             const params = new URLSearchParams();
             params.append("username", this.username)
             try {
-                const room = await axios.post(`http://localhost:9000/room/${id}/join`, params)
+                const room = await axios.post(`/room/${id}/join`, params)
                 this.$router.push({ name: "room", params: { room: room.data }})
             } catch (err) {
                 alert(err.response.data)
