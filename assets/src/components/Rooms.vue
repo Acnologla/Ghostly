@@ -64,7 +64,6 @@
 
 <script>
 import axios from "axios"
-import url from "../game/url.js"
 export default {
     name: "rooms",
     data() {
@@ -75,7 +74,7 @@ export default {
         }
     },
     created() {
-        axios.post(`${url()}/room/list`).then(rooms => {
+        axios.post(`/room/list`).then(rooms => {
             this.rooms = rooms.data
         })
         const interval = setInterval(() => {

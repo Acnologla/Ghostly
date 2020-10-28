@@ -1,4 +1,4 @@
-<p align="center"><img src="./assets/src/assets/sprites/ghost.png" alt="Gray shape shifter" height="60"/></p>
+<p align="center"><img src="./assets/public/sprites/ghost.png" alt="Gray shape shifter" height="60"/></p>
 <h1 align="center">Ghostly</h1>
 <br>
 <p align="center">
@@ -14,5 +14,7 @@ Ande por uma casinha como se voce fosse um fantasma. Não há nada, além do inc
 
 ## :question: Como usar?
 Use 
-```docker build --tag Ghostly .```
-```docker run -d -p 9000:9000 Ghostly```
+```docker build --tag ghostly .```
+<br>
+
+```docker run -d -p 9000:9000 ghostly```
