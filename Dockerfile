@@ -10,7 +10,7 @@ ENV GOOS=linux \
     
 WORKDIR /Ghostly
 COPY . .
-COPY --from=publicBuilder /assets /Ghostly/public
+COPY --from=publicBuilder /public /Ghostly/public
 RUN go mod download
 RUN go get github.com/revel/cmd/revel
 
@@ -23,6 +23,6 @@ WORKDIR /dist
 
 COPY --from=builder /Ghostly/app /dist
 
-RUN chmod +x /dist/Ghostly.tar.gz
+RUN chmod +x /dist/run.sh
 EXPOSE 9000
-ENTRYPOINT ./Ghostly.tar.gz
+ENTRYPOINT ./run.sh
