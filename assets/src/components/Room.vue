@@ -33,8 +33,8 @@ export default{
         }
     },
     async created(){
-
-          const socket = new WebSocket(`ws://${window.location.host}/ws/room?username=${this.username}&roomID=${this.$route.params.room}`)
+          const wsType = window.location.protocol === 'https:' ? "wss" : "ws"
+          const socket = new WebSocket(`${wsType}://${window.location.host}/ws/room?username=${this.username}&roomID=${this.$route.params.room}`)
           this.ws = socket
 
           socket.onmessage = async (message) => {
